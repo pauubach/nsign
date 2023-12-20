@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  # Mysql database container
+  mysql:
+    image: mysql
+    container_name: nsign_db_symfony
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    networks:
+      - nsign
+
+  # phpmyadmin container
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: nsign_phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 8085:80
+    environment:
+      PMA_HOST: mysql
+    networks:
+      - nsign
+  www:
+    build: docker/php
+    container_name: nsign_symfony
+    ports:
+      - '8081:80'
+      - '8082:443'
+    volumes:
+      - ./docker/php/vhosts:/etc/apache2/sites-enabled
+      - ./:/var/www
+    restart: always
+    networks:
+      - nsign
+    depends_on:
+      - mysql
+    links:
+      - mysql
+
+networks:
+  nsign:
+
+volumes:
+  db-data:
