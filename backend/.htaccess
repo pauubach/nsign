@@ -1,0 +1,4 @@
+# Fix JWT Authentication problem
+RewriteEngine on
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]

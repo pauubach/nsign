@@ -1,18 +1,30 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar flat class="bg-secondary row justify-between">
+      <q-toolbar flat class="bg-secondary row justify-end">
         <q-btn
-          color="primary"
-          icon="home"
-          label="Inicio"
-          @click="$router.push('/')"
-        ></q-btn>
-        <q-btn
+          v-show="!userStore.isLogged"
+          class="q-mx-sm"
           color="primary"
           icon="login"
           label="Login"
           @click="$router.push('/login')"
+        ></q-btn>
+        <q-btn
+          v-show="!userStore.isLogged"
+          class="q-mx-sm"
+          color="primary"
+          icon="person_add"
+          label="Registro"
+          @click="$router.push('/register')"
+        ></q-btn>
+        <q-btn
+          v-show="userStore.isLogged"
+          class="q-mx-sm"
+          color="primary"
+          icon="logout"
+          label="Logout"
+          @click="doLogout"
         ></q-btn>
       </q-toolbar>
     </q-header>
@@ -21,15 +33,24 @@
     </q-page-container>
   </q-layout>
 </template>
+<script setup>
+import { useUserStore } from "stores/user";
+import { useRouter } from "vue-router";
 
-<script>
-// import { defineComponent, ref } from "vue";
+const userStore = useUserStore();
+const router = useRouter();
 
-// export default defineComponent({
-//   name: "MainLayout",
+const doLogout = async () => {
+  userStore.logout();
+  router.push("/login");
+};
 
-//   setup() {
-//     return {};
-//   },
-// });
+const checkLogged = async () => {
+  await userStore.checkUser();
+  if (!userStore.isLogged) {
+    router.push("/login");
+  }
+};
+
+checkLogged();
 </script>

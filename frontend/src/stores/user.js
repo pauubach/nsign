@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { api } from "boot/axios";
+import { Notify } from "quasar";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -10,17 +11,53 @@ export const useUserStore = defineStore("user", {
     getUser: (state) => state.user || null,
   },
   actions: {
-    login(user) {
-      const payload = {
-        email: user.email,
-        password: user.password,
-      };
+    async login(user) {
+      const response = await api
+        .post("/api/login_check", user)
+        .catch(() =>
+          Notify.create({ type: "warning", message: "Datos incorrectos" })
+        );
+      localStorage.removeItem("nsign-jwt-token");
+      localStorage.setItem("nsign-jwt-token", response.data.token);
 
-      api.post("/api/login", user);
-      this.user.email = "pau.ubach@gmail.com";
+      const response_user = await api.post(
+        "/api/user",
+        {},
+        { headers: { Authorization: `Bearer ${response.data.token}` } }
+      );
+      this.user = {
+        email: response_user.data.email,
+        roles: response_user.data.roles,
+      };
+    },
+    async register(user) {
+      const response = await api.post("/api/register", user).catch(() => {
+        Notify.create({
+          type: "warning",
+          message: "Error al dar de alta al usuario",
+        });
+      });
+      if (response) {
+        await this.login(user);
+      }
+    },
+    async checkUser() {
+      const token = localStorage.getItem("nsign-jwt-token");
+      if (!token) {
+        return null;
+      }
+      const response = await api.post(
+        "/api/user",
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      this.user = response.data;
+      return this.user;
     },
     logout() {
-      this.user = {};
+      this.user = null;
+      localStorage.clear();
+      this.checkUser();
     },
   },
 });

@@ -1,8 +1,11 @@
 api_login_check:
   path: /api/login_check
-api_login:
-  path: /api/login_check
-  controller: App\Controller\AuthController::login
+api_register:
+  path: /api/register
+  controller: App\Controller\AuthController::register
+api_user:
+  path: /api/user
+  controller: App\Controller\AuthController::getUserInfo
 app_list:
   path: /api/list
   controller: App\Controller\ListController::index

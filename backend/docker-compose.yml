@@ -30,7 +30,6 @@ services:
     container_name: nsign_symfony
     ports:
       - '8081:80'
-      - '8082:443'
     volumes:
       - ./docker/php/vhosts:/etc/apache2/sites-enabled
       - ./:/var/www
