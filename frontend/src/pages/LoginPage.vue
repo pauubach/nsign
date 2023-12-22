@@ -17,7 +17,7 @@
         filled
         autocomplete="current-password"
         :type="user.isPwd ? 'password' : 'text'"
-        :rules="[(val) => val.length || 'Escribe un password']"
+        :rules="[(val) => val.length || 'Escribe una contraseña']"
         label="Contraseña *"
       >
         <template v-slot:append>
@@ -30,7 +30,7 @@
       </q-input>
       <div>
         <q-btn
-          label="Submit"
+          label="Entrar"
           type="submit"
           color="primary"
           :disabled="loading"
@@ -42,12 +42,10 @@
 
 <script setup>
 import { useUserStore } from "stores/user";
-import { useNotificationStore } from "stores/notification";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 
 const userStore = useUserStore();
-const notificationStore = useNotificationStore();
 
 const user = ref({
   email: "",
@@ -69,7 +67,6 @@ const doLogin = async () => {
 
     router.push({ name: "home" });
   } catch (error) {
-    notificationStore.error({ message: error });
   } finally {
     loading.value = false;
   }

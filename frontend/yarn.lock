@@ -2849,6 +2849,11 @@ vite@^2.9.13:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vue-auth-image@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/vue-auth-image/-/vue-auth-image-0.0.3.tgz#3d9cb524c56175994c11010ad33c3ceee68386ee"
+  integrity sha512-/x3+3crzDpJO3Wl8QjNj53QLLkUdQviDzQCrgpg/390R/1Ptp8UcilaDSYQknNQxNrUj/xQegWttodiTSfPRLA==
+
 vue-demi@>=0.14.5:
   version "0.14.6"
   resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.14.6.tgz#dc706582851dc1cdc17a0054f4fec2eb6df74c92"

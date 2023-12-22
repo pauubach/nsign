@@ -26,9 +26,10 @@ class AuthController extends ApiController
      * @Route("/api/register", name="register", methods={"POST"})
      * @param Request $request
      * @param UserPasswordHasherInterface $encoder
+     *
      * @return JsonResponse
      */
-    public function register(Request $request, UserPasswordHasherInterface $hasher): JsonResponse
+    public function register(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $em): JsonResponse
     {
         $request = $this->transformJsonBody($request);
         $email = $request->get('email');
@@ -36,35 +37,21 @@ class AuthController extends ApiController
 
         if (empty($email) || empty($password)) {
             return $this->respondValidationError("Email o Contraseña inválidos");
+        }
+
+        if ($em->getRepository(User::class)->findByEmail($email)) {
+            return $this->respondValidationError("No se ha podido crear el usuario.");
         }
 
         $user = new User($email);
         $user->setPassword($hasher->hashPassword($user, $password));
         $user->setEmail($email);
-        $user->setRoles([]);
+
+        $roles = $em->getRepository(User::class)->findAll() ? ['ROLE_USER'] : ['ROLE_ADMIN', 'ROLE_USER'];
+        $user->setRoles($roles);
         $this->em->persist($user);
         $this->em->flush();
-        return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getEmail()));
-    }
-
-    /**
-     * @Route("/api/login", name="login", methods={"POST"})
-     * @param Request $request
-     * @param UserPasswordHasherInterface $encoder
-     * @return JsonResponse
-     */
-    public function login(Request $request, UserPasswordHasherInterface $hasher): JsonResponse
-    {
-        $request = $this->transformJsonBody($request);
-        $email = $request->get('email');
-        $password = $request->get('password');
-
-        if (empty($email) || empty($password)) {
-            return $this->respondValidationError("Email o Contraseña inválidos");
-        }
-
-        $user = $this->em->getRepository(User::class)->findOneByEmail($email);
-        return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getEmail()));
+        return $this->respondWithSuccess(sprintf('Usuario %s creado', $user->getEmail()));
     }
 
     /**
@@ -76,5 +63,21 @@ class AuthController extends ApiController
     public function getTokenUser(UserInterface $user, JWTTokenManagerInterface $JWTManager): JsonResponse
     {
         return new JsonResponse(['token' => $JWTManager->create($user)]);
+    }
+
+    /**
+     * @Route("/api/user", name="user", methods={"POST"})
+     * @param UserInterface $user
+     * @param JWTTokenManagerInterface $JWTManager
+     * @return JsonResponse
+     */
+    public function getUserInfo(Request $request): JsonResponse
+    {
+        $user = $this->getUser();
+
+        return new JsonResponse([
+            'email' => $user->getUserIdentifier(),
+            'roles' => $user->getRoles()
+        ]);
     }
 }
