@@ -37,10 +37,8 @@ export const useProductsStore = defineStore("products", {
           })
         );
       this.products = response.data;
-      if (complete) {
-        this.getImages();
-        Loading.hide();
-      }
+      this.getImages();
+      Loading.hide();
     },
 
     async getCategories() {

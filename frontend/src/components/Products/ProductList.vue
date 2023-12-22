@@ -4,6 +4,7 @@
       class="table"
       :rows="productsStore.products"
       :columns="columns"
+      :visible-columns="visibleColumns"
       row-key="id"
       selection="multiple"
       v-model:selected="selectedRows"
@@ -27,6 +28,7 @@
           color="primary"
           @click.stop="editRow(null)"
           icon="add"
+          v-if="userStore.isAdmin"
         />
         <div class="separator-sm" />
         <q-btn
@@ -37,7 +39,7 @@
           color="accent"
           @click.stop="deleteSelectedRows()"
           icon="delete"
-          v-show="selectedRows?.length"
+          v-if="selectedRows?.length && userStore.isAdmin"
         />
         <div class="separator" />
         <q-input
@@ -91,7 +93,7 @@
               />
               <q-icon v-else name="cancel" color="negative" size="sm" />
             </span>
-            <span v-if="col.name === 'actions'">
+            <span v-if="col.name === 'actions' && userStore.isAdmin">
               <q-btn
                 dense
                 round
@@ -129,11 +131,16 @@
 <script setup>
 import { ref } from "vue";
 import { useProductsStore } from "stores/products";
+import { useUserStore } from "stores/user";
 import { Dialog } from "quasar";
 import ProductCreation from "./ProductCreation.vue";
 
 const productsStore = useProductsStore();
+const userStore = useUserStore();
 
+const visibleColumns = userStore.isAdmin
+  ? ["id", "image", "title", "category", "status", "actions"]
+  : ["id", "image", "title", "category", "status"];
 const columns = [
   {
     name: "id",
