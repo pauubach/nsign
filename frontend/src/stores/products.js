@@ -119,6 +119,7 @@ export const useProductsStore = defineStore("products", {
 
     async addProduct(product) {
       const formData = new FormData();
+      formData.append("id", product.id);
       formData.append("title", product.title);
       formData.append("category", product.category.name);
       formData.append("status", product.status);
@@ -131,6 +132,7 @@ export const useProductsStore = defineStore("products", {
           Authorization: `Bearer ${localStorage.getItem("nsign-jwt-token")}`,
         },
       });
+      this.getProducts();
     },
   },
 });

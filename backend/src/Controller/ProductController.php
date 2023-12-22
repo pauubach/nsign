@@ -64,12 +64,14 @@ class ProductController extends ApiController
         $status = $request_json->get('status');
         $price = $request_json->get('price');
 
-        // if($request_json->get('image'))
-        $imageFile = $request->files->get('image');
-
         $file = '';
-        if ($imageFile) {
-            $file = 'images/'.$fileUploader->upload($imageFile);
+        if ( !$request_json->get('image') ) {
+            $imageFile = $request->files->get('image');
+            if ($imageFile) {
+                $file = 'images/'.$fileUploader->upload($imageFile);
+            }
+        } else {
+            $file = $request_json->get('image');
         }
 
         $category = $doctrine->getRepository(Category::class)->findOneByName($category_name);
@@ -96,6 +98,6 @@ class ProductController extends ApiController
         $this->em->persist($product);
         $this->em->flush();
 
-        return $this->respondWithSuccess($request_json->get('image'));
+        return $this->respondWithSuccess('Producto añadido');
     }
 }

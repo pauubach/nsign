@@ -95,6 +95,7 @@
               label="Guardar"
               color="primary"
               dense
+              v-close-popup
             ></q-btn>
           </q-card-actions>
         </q-card-section>
@@ -124,10 +125,10 @@ const props = defineProps({
 const prod = ref({
   id: props.product?.id,
   title: props.product?.title,
-  category: props.product?.category,
+  category: { name: props.product?.category },
   status: props.product?.status || "INACTIVO",
   price: props.product?.price,
-  image: props.product?.image,
+  image: typeof props.product?.image === "string" ? null : props.product?.image,
 });
 
 const productStore = useProductsStore();
@@ -167,11 +168,14 @@ const updateProd = () => {
   prod.value = {
     id: props.id,
     title: props.product?.title,
-    category: props.product?.category,
+    category: { name: props.product?.category },
     status: props.product?.status || "INACTIVO",
     price: props.product?.price,
-    image: props.product?.image,
+    image:
+      typeof props.product?.image === "string" ? null : props.product?.image,
   };
 };
-const sendForm = () => productStore.addProduct(prod.value);
+const sendForm = () => {
+  productStore.addProduct(prod.value);
+};
 </script>
