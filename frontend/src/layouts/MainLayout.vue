@@ -29,6 +29,9 @@
       </q-toolbar>
     </q-header>
     <q-page-container>
+      <ProductList v-if="userStore.isLogged">
+        <h4>Listado de productos</h4>
+      </ProductList>
       <router-view />
     </q-page-container>
   </q-layout>
@@ -36,6 +39,7 @@
 <script setup>
 import { useUserStore } from "stores/user";
 import { useRouter } from "vue-router";
+import ProductList from "components/Products/ProductList.vue";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -49,6 +53,8 @@ const checkLogged = async () => {
   await userStore.checkUser();
   if (!userStore.isLogged) {
     router.push("/login");
+  } else {
+    router.push("/");
   }
 };
 

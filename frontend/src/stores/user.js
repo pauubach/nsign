@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { api } from "boot/axios";
-import { Notify } from "quasar";
+import { Notify, Loading } from "quasar";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -8,35 +8,44 @@ export const useUserStore = defineStore("user", {
   }),
   getters: {
     isLogged: (state) => state.user,
-    getUser: (state) => state.user || null,
+    isAdmin: (state) => state.user && state.user.roles.includes("ROLE_ADMIN"),
   },
   actions: {
     async login(user) {
+      Loading.show();
       const response = await api
         .post("/api/login_check", user)
         .catch(() =>
           Notify.create({ type: "warning", message: "Datos incorrectos" })
-        );
+        )
+        .finally(() => Loading.hide());
       localStorage.removeItem("nsign-jwt-token");
       localStorage.setItem("nsign-jwt-token", response.data.token);
 
-      const response_user = await api.post(
-        "/api/user",
-        {},
-        { headers: { Authorization: `Bearer ${response.data.token}` } }
-      );
+      Loading.show();
+      const response_user = await api
+        .post(
+          "/api/user",
+          {},
+          { headers: { Authorization: `Bearer ${response.data.token}` } }
+        )
+        .finally(() => Loading.hide());
       this.user = {
         email: response_user.data.email,
         roles: response_user.data.roles,
       };
     },
     async register(user) {
-      const response = await api.post("/api/register", user).catch(() => {
-        Notify.create({
-          type: "warning",
-          message: "Error al dar de alta al usuario",
-        });
-      });
+      Loading.show();
+      const response = await api
+        .post("/api/register", user)
+        .catch(() => {
+          Notify.create({
+            type: "warning",
+            message: "Error al dar de alta al usuario",
+          });
+        })
+        .finally(() => Loading.hide());
       if (response) {
         await this.login(user);
       }
@@ -46,13 +55,20 @@ export const useUserStore = defineStore("user", {
       if (!token) {
         return null;
       }
-      const response = await api.post(
-        "/api/user",
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      this.user = response.data;
-      return this.user;
+
+      Loading.show();
+      const response = await api
+        .post(
+          "/api/user",
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .catch(() => {})
+        .finally(() => Loading.hide());
+      if (response) {
+        this.user = response.data;
+        return this.user;
+      }
     },
     logout() {
       this.user = null;

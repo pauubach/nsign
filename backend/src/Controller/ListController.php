@@ -22,6 +22,7 @@ class ListController extends AbstractController
                 'title' => $product->getTitle(),
                 'status' => $product->getStatus(),
                 'price' => $product->getPrice(),
+                'image' => $product->getImage(),
                 'category'=> $product->getCategory()->getName()
             ];
         }

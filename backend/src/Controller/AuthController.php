@@ -26,6 +26,7 @@ class AuthController extends ApiController
      * @Route("/api/register", name="register", methods={"POST"})
      * @param Request $request
      * @param UserPasswordHasherInterface $encoder
+     *
      * @return JsonResponse
      */
     public function register(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $em): JsonResponse

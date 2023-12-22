@@ -9,3 +9,6 @@ api_user:
 app_list:
   path: /api/list
   controller: App\Controller\ListController::index
+app_images:
+  path: /api/image
+  controller: App\Controller\ImageController::getImage

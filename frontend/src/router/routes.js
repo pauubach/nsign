@@ -1,21 +1,27 @@
+import MainLayout from "layouts/MainLayout.vue";
+import IndexPage from "pages/IndexPage.vue";
+import LoginPage from "pages/LoginPage.vue";
+import RegisterPage from "pages/RegisterPage.vue";
+import ErrorNotFound from "src/pages/ErrorNotFound.vue";
+
 const routes = [
   {
     path: "/",
-    component: () => import("layouts/MainLayout.vue"),
+    component: MainLayout,
     children: [
       {
         path: "",
-        component: () => import("pages/IndexPage.vue"),
+        component: IndexPage,
         name: "home",
       },
       {
         path: "login",
-        component: () => import("pages/LoginPage.vue"),
+        component: LoginPage,
         name: "login",
       },
       {
         path: "register",
-        component: () => import("pages/RegisterPage.vue"),
+        component: RegisterPage,
         name: "register",
       },
     ],
@@ -25,7 +31,7 @@ const routes = [
   // but you can also remove it
   {
     path: "/:catchAll(.*)*",
-    component: () => import("pages/ErrorNotFound.vue"),
+    component: ErrorNotFound,
   },
 ];
 
