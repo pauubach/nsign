@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,14 +54,15 @@ class ProductController extends ApiController
     }
 
     #[Route('/create', name: 'api_product_create')]
-    public function create(Request $request, ManagerRegistry $doctrine): JsonResponse
+    public function create(Request $request, ManagerRegistry $doctrine, FileUploader $fileUploader): JsonResponse
     {
         $request_json = $this->transformJsonBody($request);
         $title = $request_json->get('title');
         $category = $request_json->get('category');
         $status = $request_json->get('status');
         $price = $request_json->get('price');
-        $file = $request->files->get('file');
+        ($request);
+        $file = $fileUploader->upload($request->files->get('file')->getData());
 
         return $this->respondWithSuccess(gettype($file));
 
