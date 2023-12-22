@@ -2,16 +2,17 @@
 
 namespace App\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Product;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/api/list')]
-class ListController extends AbstractController
+#[Route('/api')]
+class ListController extends ApiController
 {
-    #[Route('/', name: 'app_list')]
+    #[Route('/list', name: 'app_list')]
     public function index(ManagerRegistry $doctrine): JsonResponse
     {
         $products = $doctrine->getRepository(Product::class)->findAll();
@@ -27,5 +28,11 @@ class ListController extends AbstractController
             ];
         }
         return $this->json($productList);
+    }
+
+    #[Route('/del', name: 'api_del_products')]
+    public function hola(ManagerRegistry $doctrine): JsonResponse
+    {
+        dd("HOLA");
     }
 }

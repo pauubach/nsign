@@ -6,9 +6,18 @@ api_register:
 api_user:
   path: /api/user
   controller: App\Controller\AuthController::getUserInfo
-app_list:
-  path: /api/list
-  controller: App\Controller\ListController::index
-app_images:
+api_product_list:
+  path: /api/product
+  controller: App\Controller\ProductController::index
+api_product_delete:
+  path: /api/product/delete
+  controller: App\Controller\ProductController::delete
+api_product_create:
+  path: /api/product/create
+  controller: App\Controller\ProductController::create
+api_categories:
+  path: /api/categories
+  controller: App\Controller\CategoryController::index
+api_images:
   path: /api/image
   controller: App\Controller\ImageController::getImage

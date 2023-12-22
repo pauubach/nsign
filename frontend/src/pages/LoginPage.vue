@@ -43,7 +43,6 @@
 <script setup>
 import { useUserStore } from "stores/user";
 import { useRouter } from "vue-router";
-import { Notify } from "quasar";
 import { ref } from "vue";
 
 const userStore = useUserStore();

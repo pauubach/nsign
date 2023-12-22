@@ -30,7 +30,7 @@
     </q-header>
     <q-page-container>
       <ProductList v-if="userStore.isLogged">
-        <h4>Listado de productos</h4>
+        <h4 class="q-ma-sm">Listado de productos</h4>
       </ProductList>
       <router-view />
     </q-page-container>

@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ImageController extends ApiController
 {
-    #[Route('api/image', name: 'app_image', methods:["POST"])]
+    #[Route('api/image', name: 'api_image', methods:["POST"])]
     public function getImage(Request $request): BinaryFileResponse
     {
         $request = $this->transformJsonBody($request);
