@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Product;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -57,15 +58,44 @@ class ProductController extends ApiController
     public function create(Request $request, ManagerRegistry $doctrine, FileUploader $fileUploader): JsonResponse
     {
         $request_json = $this->transformJsonBody($request);
+        $id = $request_json->get('id');
         $title = $request_json->get('title');
-        $category = $request_json->get('category');
+        $category_name = $request_json->get('category');
         $status = $request_json->get('status');
         $price = $request_json->get('price');
-        ($request);
-        $file = $fileUploader->upload($request->files->get('file')->getData());
 
-        return $this->respondWithSuccess(gettype($file));
+        // if($request_json->get('image'))
+        $imageFile = $request->files->get('image');
 
-        // $product = new Product();
+        $file = '';
+        if ($imageFile) {
+            $file = 'images/'.$fileUploader->upload($imageFile);
+        }
+
+        $category = $doctrine->getRepository(Category::class)->findOneByName($category_name);
+        if (!$category) {
+            $category = new Category($category_name);
+            $category->setName($category_name);
+            $this->em->persist($category);
+            $this->em->flush();
+        }
+
+        if ($id) {
+            $product = $doctrine->getRepository(Product::class)->find($id);
+        }
+        if (!$product) {
+            $product = new Product();
+        }
+
+        $product->setTitle($title)
+            ->setStatus($status)
+            ->setPrice($price)
+            ->setCategory($category)
+            ->setImage($file);
+
+        $this->em->persist($product);
+        $this->em->flush();
+
+        return $this->respondWithSuccess($request_json->get('image'));
     }
 }
