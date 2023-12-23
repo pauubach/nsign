@@ -9,6 +9,7 @@ En docker, desde nsign symfony:
 - php bin/console doctrine:database:create
 - php bin/console doctrine:migrations:migrate (confirm)
 - php bin/console doctrine:fixtures:load (confirm)
+- php bin/console lexik:jwt:generate-keypair
 
 En frontend:
 - cd frontend
