@@ -1,6 +1,7 @@
 El backend está dockerizado: 
 Desde consola ejecutar:
 - cd backend
+- composer install
 - docker compose up -d
 - cd ..
 
