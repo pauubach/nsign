@@ -12,6 +12,7 @@ En docker, desde nsign symfony:
 
 En frontend:
 - cd frontend
+- yarn install
 - yarn quasar dev
 
 Acceder a la web en http://localhost:9000/
@@ -21,3 +22,4 @@ Crear un usuario en Registro. Ese primer usuario tiene asignado rol Admin. Los q
 Observaciones: 
 - La búsqueda funciona por todos los campos excepto nombre de imagen, aunque incluyo en un comentario cómo hacer para que solo se haga por ID y nombre de producto.
 - Falta validación en la edición del producto (está en la creación de usuario, aunque muy básica).
+- Falta validación en el backend
